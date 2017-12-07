@@ -109,8 +109,32 @@ public DrawableTypeRequest<String> load(String string) {
 重点代码：Request request = buildRequest(target);
 ```
   // GenericRequestBuilder.java
-  buildRequest(target) -->buildRequestRecursive(target, null)-->obtainRequest(target, sizeMultiplier, priority, parentCoordinator) 
-   
+  buildRequest(target) -->buildRequestRecursive(target, null)-->obtainRequest(target, sizeMultiplier, priority, parentCoordinator) ，贴出具体代码：
+   private Request obtainRequest(Target<TranscodeType> target, float sizeMultiplier, Priority priority,
+            RequestCoordinator requestCoordinator) {
+        return GenericRequest.obtain(  //返回GenericRequest，后面网络部分会重点涉及
+                loadProvider,
+                model,
+                signature,
+                context,
+                priority,
+                target,
+                sizeMultiplier,
+                placeholderDrawable,
+                placeholderId,
+                errorPlaceholder,
+                errorId,
+                requestListener,
+                requestCoordinator,
+                glide.getEngine(),
+                transformation,
+                transcodeClass,
+                isCacheable,
+                animationFactory,
+                overrideWidth,
+                overrideHeight,
+                diskCacheStrategy);
+    }
 ```
 重点代码：requestTracker.runRequest(request)，RequesTracker如其名一样，可以跟踪取消、请求进度、请求结束、请求失败
 ```
@@ -124,4 +148,185 @@ public DrawableTypeRequest<String> load(String string) {
         }
     }
 ```
-至此 ，一个简单的图片加载请求就解析了一半。关于网络请求的未完待续。。。
+至此 ，一个简单的图片加载请求就解析了一半。小憩一会，接着下文关于网络请求的部分。
+上文GenericRequest，这将是关于网络请求部分，在requestTracker.runRequest(request)-->request.begin(),上文GenericRequest.begin():
+ ```
+  //GenericRequest.java
+  @Override
+    public void begin() {
+        ...
+        if (Util.isValidDimensions(overrideWidth, overrideHeight)) { 如果Glide设置了override()
+            onSizeReady(overrideWidth, overrideHeight);
+        } else {
+            target.getSize(this); //我们分析默认情况，让其自动计算，
+        }
+
+        if (!isComplete() && !isFailed() && canNotifyStatusChanged()) {
+            target.onLoadStarted(getPlaceholderDrawable());
+        }
+        ...
+    }
+    
+    public void onSizeReady(int width, int height) {
+        ...
+        loadStatus = engine.load(signature, width, height, dataFetcher, loadProvider, transformation, transcoder,
+                priority, isMemoryCacheable, diskCacheStrategy, this);
+        ...
+    }
+ ```
+发现在target.getSize(this)内部路线中最后还是调用了onSizeReady(overrideWidth, overrideHeight)，所以继续engine.load()的源码：
+```
+  //Engine.java
+  public <T, Z, R> LoadStatus load(Key signature, int width, int height, DataFetcher<T> fetcher,
+            DataLoadProvider<T, Z> loadProvider, Transformation<Z> transformation, ResourceTranscoder<Z, R> transcoder,
+            Priority priority, boolean isMemoryCacheable, DiskCacheStrategy diskCacheStrategy, ResourceCallback cb) {
+        ...
+        EngineResource<?> cached = loadFromCache(key, isMemoryCacheable);
+        if (cached != null) {
+            cb.onResourceReady(cached);
+            if (Log.isLoggable(TAG, Log.VERBOSE)) {
+                logWithTimeAndKey("Loaded resource from cache", startTime, key);
+            }
+            return null;
+        }
+
+        EngineResource<?> active = loadFromActiveResources(key, isMemoryCacheable);
+        if (active != null) {
+            cb.onResourceReady(active);
+            if (Log.isLoggable(TAG, Log.VERBOSE)) {
+                logWithTimeAndKey("Loaded resource from active resources", startTime, key);
+            }
+            return null;
+        }
+
+        EngineJob current = jobs.get(key);
+        if (current != null) {
+            current.addCallback(cb);
+            if (Log.isLoggable(TAG, Log.VERBOSE)) {
+                logWithTimeAndKey("Added to existing load", startTime, key);
+            }
+            return new LoadStatus(cb, current);
+        }
+
+        EngineJob engineJob = engineJobFactory.build(key, isMemoryCacheable);
+        DecodeJob<T, Z, R> decodeJob = new DecodeJob<T, Z, R>(key, width, height, fetcher, loadProvider, transformation,
+                transcoder, diskCacheProvider, diskCacheStrategy, priority);
+        EngineRunnable runnable = new EngineRunnable(engineJob, decodeJob, priority);
+        jobs.put(key, engineJob);
+        engineJob.addCallback(cb);
+        engineJob.start(runnable);
+        ...
+        return new LoadStatus(cb, engineJob);
+    }
+```
+cb.onResourceReady(cached)和cb.onResourceReady(active);都是读取缓存的数据，这是一个回调，在GenericRequest.onResourceRead（）中可以看到target.onResourceReady(result, animation);target 在GenericRequestBuilder.into(View)中的into(glide.buildImageViewTarget(view, transcodeClass));创建：
+```
+public class ImageViewTargetFactory {
+
+    @SuppressWarnings("unchecked")
+    public <Z> Target<Z> buildTarget(ImageView view, Class<Z> clazz) {
+        if (GlideDrawable.class.isAssignableFrom(clazz)) {
+            return (Target<Z>) new GlideDrawableImageViewTarget(view);
+        } else if (Bitmap.class.equals(clazz)) {
+            return (Target<Z>) new BitmapImageViewTarget(view);
+        } else if (Drawable.class.isAssignableFrom(clazz)) {
+            return (Target<Z>) new DrawableImageViewTarget(view);
+        } else {
+            throw new IllegalArgumentException("Unhandled class: " + clazz
+                    + ", try .as*(Class).transcode(ResourceTranscoder)");
+        }
+    }
+}
+```
+内部可以看到：
+```
+  @Override
+    protected void setResource(Drawable resource) {
+       view.setImageDrawable(resource);
+    }
+```
+至此就可以从缓存中加载数据加载了。
+回到上面，如果缓存不存在，则开始读取网络数据，再看看源码：
+```
+        EngineJob engineJob = engineJobFactory.build(key, isMemoryCacheable);
+        DecodeJob<T, Z, R> decodeJob = new DecodeJob<T, Z, R>(key, width, height, fetcher, loadProvider, transformation,
+                transcoder, diskCacheProvider, diskCacheStrategy, priority);
+        EngineRunnable runnable = new EngineRunnable(engineJob, decodeJob, priority);
+        jobs.put(key, engineJob);
+        engineJob.addCallback(cb);
+        engineJob.start(runnable);
+```
+进入 engineJob.start(runnable):
+```
+  public void start(EngineRunnable engineRunnable) {
+        this.engineRunnable = engineRunnable; //传递创建的线程
+        future = diskCacheService.submit(engineRunnable);
+    }
+```
+EngineRunnable肯定是开启线程，准备网络请求加载：
+```
+//EngineRunnable.java
+@Override
+    public void run() {
+        if (isCancelled) {
+            return;
+        }
+
+        Exception exception = null;
+        Resource<?> resource = null;
+        try {
+            resource = decode();  //目光聚焦
+        } catch (Exception e) {
+            if (Log.isLoggable(TAG, Log.VERBOSE)) {
+                Log.v(TAG, "Exception decoding", e);
+            }
+            exception = e;
+        }
+
+        if (isCancelled) {
+            if (resource != null) {
+                resource.recycle();
+            }
+            return;
+        }
+
+        if (resource == null) {
+            onLoadFailed(exception);
+        } else {
+            onLoadComplete(resource);
+        }
+    }
+    private Resource<?> decode() throws Exception {
+        if (isDecodingFromCache()) {
+            return decodeFromCache(); //以后再研究
+        } else {
+            return decodeFromSource(); //深入
+       }
+    }
+    private Resource<?> decodeFromSource() throws Exception {
+        return decodeJob.decodeFromSource();
+    }
+```
+结构很清晰，直接进入decode()-->decodeFromSource(),然后转入DecodeJob类中：
+```
+    public Resource<Z> decodeFromSource() throws Exception {
+        Resource<T> decoded = decodeSource();
+        return transformEncodeAndTranscode(decoded);
+    }
+    private Resource<T> decodeSource() throws Exception {
+        Resource<T> decoded = null;
+        try {
+            long startTime = LogTime.getLogTime();
+            final A data = fetcher.loadData(priority); //
+            ...
+            if (isCancelled) {
+                return null;
+            }
+            decoded = decodeFromSourceData(data); //先不关注
+        } finally {
+            fetcher.cleanup();
+        }
+        return decoded;
+    }
+```
+聪明的你一定发现了什么，对，就是fetcher.loadData(priority);看来一切的秘密都在fetcher之中，在一路追踪fetcher的情况下，终于在GenericRequestBuilder中找到一点蛛丝马迹：private ChildLoadProvider<ModelType, DataType, ResourceType, TranscodeType> loadProvider;
