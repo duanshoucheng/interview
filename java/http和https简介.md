@@ -59,3 +59,7 @@ HTTPS一般使用的加密与HASH算法如下：
 对称加密算法：AES，RC4，3DES
 
 HASH算法：MD5，SHA1，SHA256
+ 
+参考 
+- [HTTPS和HTTP有什么区别，到底安全在哪里？](http://www.jianshu.com/p/be7a20cc8468)；
+- [Android Https请求详细demo](http://gjican.iteye.com/blog/2153177);
