@@ -57,8 +57,11 @@ ttps报文在被包装成tcp报文的时候完成加密的过程，无论是http
 
 ##为什么TIME_WAIT状态需要经过2MSL(最大报文段生存时间)才能返回到CLOSE状态？##
 虽然按道理，四个报文都发送完毕，我们可以直接进入CLOSE状态了，但是我们必须假象网络是不可靠的，有可以最后一个ACK丢失。所以TIME_WAIT状态就是用来重发可能丢失的ACK报文。
-
-
+ 
+## 8、HTTP和Socket的区别
+实际上socket是对TCP/IP协议的封装，Socket本身并不是协议，而是一个调用接口(API)。
+我的理解是socket对于TCP/IP相当于okhttp对应于HTTP。
+ 
 HTTPS一般使用的加密与HASH算法如下：
 
 非对称加密算法：RSA，DSA/DSS
