@@ -210,3 +210,33 @@ public class ThreadAvoidActivity extends Activity {
 1. **尽可能使用静态内部类而不是非静态内部类**。每一个非静态内部类实例都会持有一个外部类的引用，若该引用是 Activity 的引用，那么该 Activity 在被销毁时将无法被回收。如果你的静态内部类需要一个相关 Activity 的引用以确保功能能够正常运行，那么你得确保你在对象中使用的是一个 Activity 的弱引用，否则你的 Activity 将会发生意外的内存泄漏。
 2. **不要总想着 Java 的垃圾回收机制会帮你解决所有内存回收问题**。Java 线程会一直存活，直到他们都被显式关闭，抑或是其进程被 Android 系统杀死。所以，为你的后台线程实现销毁逻辑是你在使用线程时必须时刻铭记的细节，此外，你在设计销毁逻辑时要根据 Activity 的生命周期去设计，避免出现 Bug。
 3. **考虑你是否真的需要使用线程**。Android 应用的框架层为我们提供了很多便于开发者执行后台操作的类。例如：我们可以使用 Loader 代替在 Activity 的生命周期中用线程通过注入执行短暂的异步后台查询操作，考虑用 Service 将结构通知给 UI 的 BroadcastReceiver。
+
+
+内存泄漏产生的原因在Android中大致分为以下几种：
+### 1.static变量引起的内存泄漏 
+因为static变量的生命周期是在类加载时开始 类卸载时结束，也就是说static变量是在程序进程死亡时才释放，如果在static变量中 引用了Activity 那么 这个Activity由于被引用，便会随static变量的生命周期一样，一直无法被释放，造成内存泄漏。  
+解决办法：   
+在Activity被静态变量引用时，使用 getApplicationContext 因为Application生命周期从程序开始到结束，和static变量的一样。
+### 2.线程造成的内存泄漏 
+类似于上述例子中的情况，线程执行时间很长，及时Activity跳出还会执行，因为线程或者Runnable是Acticvity内部类，因此握有Activity的实例(因为创建内部类必须依靠外部类)，因此造成Activity无法释放。   
+AsyncTask 有线程池，问题更严重  
+解决办法：   
+- 1.合理安排线程执行的时间，控制线程在Activity结束前结束。 
+- 2.将内部类改为静态内部类，并使用弱引用WeakReference来保存Activity实例 因为弱引用 只要GC发现了 就会回收它 ，因此可尽快回收
+- 3.BitMap占用过多内存   
+bitmap的解析需要占用内存，但是内存只提供8M的空间给BitMap，如果图片过多，并且没有及时 recycle bitmap 那么就会造成内存溢出。  
+解决办法：   
+及时recycle 压缩图片之后加载图片  
+### 4.资源未被及时关闭造成的内存泄漏 
+比如一些Cursor 没有及时close 会保存有Activity的引用，导致内存泄漏  
+解决办法：   
+在onDestory方法中及时 close即可
+### 5.Handler的使用造成的内存泄漏 
+由于在Handler的使用中，handler会发送message对象到 MessageQueue中 然后 Looper会轮询MessageQueue 然后取出Message执行，但是如果一个Message长时间没被取出执行，那么由于 Message中有 Handler的引用，而 Handler 一般来说也是内部类对象，Message引用 Handler ，Handler引用 Activity 这样 使得 Activity无法回收。  
+解决办法：   
+依旧使用 静态内部类+弱引用的方式 可解决  
+### 6.带参数的单例
+ 
+如果我们在在调用Singleton的getInstance()方法时传入了Activity。那么当instance没有释放时，这个Activity会一直存在。因此造成内存泄露。
+解决方法：  
+可以将new Singleton(context)改为new Singleton(context.getApplicationContext())即可，这样便和传入的Activity没关系了。
