@@ -104,3 +104,54 @@ public class ExampleApplication extends Application {
   }
 }
 ```
+# 五、查找卡顿工具：BlockCannary
+BlockCannary参数的解读：
+- cpuCore：手机cpu个数
+- processName：应用包名。
+- freeMemory: 手机剩余内存,单位KB。
+- timecost: 该Message(事件)执行时间，单位 ms。
+- threadtimecost: 该Message(事件)执行线程时间（线程实际运行时间，不包含别的线程占用cpu时间），单位 ms。
+- cpubusy: true表示cpu负载过重，false表示cpu负载不重。cpu负载过重导致该Message(事件) 超时，错误不在本事件处理上。
+
+用法如下:  
+第一步配置：
+```
+//compile 'com.github.markzhai:blockcanary-android:1.5.0'
+debugCompile'com.github.markzhai:blockcanary-android:1.5.0'
+releaseCompile 'com.github.markzhai:blockcanary-no-op:1.5.0'
+```
+第二步：
+在Application的onCreate（）方法里加入：
+```
+BlockCanary.install(this, new AppBlockCanaryContext()).start();
+```
+第三步：
+监视应用程序的标签和图标可以通过在xhdpi drawable目录和strings.xml中放置一个可以绘制的块金丝雀图来配置：
+```
+/**
+ * 实现各种上下文，包括应用标示符，用户 uid，网络类型，卡慢判断阙值，Log 保存位置等
+ */
+
+public class AppBlockCanaryContext  extends BlockCanaryContext {
+
+    /**
+     * Implement in your project.
+     *
+     * @return Qualifier which can specify this installation, like version + flavor.
+     */
+    public String provideQualifier() {
+        return "unknown";
+    }
+
+    /**
+     * Implement in your project.
+     *
+     * @return user id
+     */
+    public String provideUid() {
+        return "uid";
+    }
+  ......
+}
+```
+第四步：运行Demo即可
