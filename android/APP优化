@@ -1,0 +1,24 @@
+一般来说, 有以下几个方面:
+
+- App启动优化
+- 布局优化
+- 响应优化
+- 内存优化
+- 电池使用优化
+- 网络优化
+ 
+优化包括：I/o的优化、网络操作的优化、内存的优化、数据结构的优化、代码层次的优化、UI渲染优化、CPU资源使用率的优化、异常处理的优化等
+
+
+包括:
+
+1. [背景:Android App优化, 要怎么做?](http://www.jianshu.com/p/f7006ab64da7)
+2. [Android App优化之性能分析工具](http://www.jianshu.com/p/da2a4bfcba68)
+3. [Android App优化之提升你的App启动速度之理论基础](http://www.jianshu.com/p/98c1656a357a)
+4. [Android App优化之提升你的App启动速度之实例挑战](http://www.jianshu.com/p/4f10c9a10ac9)
+5. [Android App优化之Layout怎么摆](http://www.jianshu.com/p/4943dae4c333)
+6. [Android App优化之ANR详解](http://www.jianshu.com/p/6d855e984b99)
+7. [Android App优化之消除卡顿](http://www.jianshu.com/p/1fb065c806e6)
+8. [Android App优化之内存优化](http://www.jianshu.com/p/48475df838d9)
+9. [Android App优化之持久电量](http://www.jianshu.com/p/c55ef05c0047)
+10. [Android App优化之如何高效网络请求](http://www.jianshu.com/p/d4c2c62ffc35)
