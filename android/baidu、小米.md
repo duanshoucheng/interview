@@ -1,5 +1,9 @@
 12.14
 # HTTPS的三次握手，怎么把秘钥传递过去的
+非对称加密算法：RSA，DSA/DSS;对称加密算法：AES，RC4，3DES;HASH算法：MD5，SHA1，SHA256 .记住RSA、AES、DES是对称还是非对称，以及HASH这几种算法  
+HTTPS解决的是信息传输中数据被篡改、窃取。HTTPS通过对称和非对称实现安全的，因为非对称效率比较低，所以是通过非对称传递对称加密的秘钥，使用非对称加密来实现数据传输的。
+[Https简介](https://github.com/duanshoucheng/interview/blob/master/java/http%E5%92%8Chttps%E7%AE%80%E4%BB%8B.md)
+
 # 静态类有什么作用
  如果一个类要被声明为static的，只有一种情况，就是静态内部类。  
  静态内部类实际上与普通类（即类名必须与文件名一样的顶级类）一样，只是静态内部类在某一类的内部定义了而已，既然是类，要想使用就必须实例化。   
@@ -15,6 +19,10 @@
  - 静态类的成员不能有protected或protected internal访问保护修饰符。
 # hashtable的源码，是怎样实现线程安全的
 # Lambda有什么优点
+- 费神去命名一个函数
+- 享受了一些函数式编程的优势
+ 
+请 继续补充
 # 并发包
 # 线程池，如果超出最大线程数怎么办
 # 线程安全，生产者消费者，两个线程同时读数据，valite和sync, leisuo对象锁
