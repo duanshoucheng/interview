@@ -8,7 +8,7 @@ DDMS的作用它提供截屏，查看线程和堆的信息，logcat，进程，�
 可以参考：[Android Studio上使用可视化调试工具Hierarchy Viewer](http://blog.csdn.net/cdw_wy/article/details/53240885)
 。
 
-# TraceView的使用（DDMS）
+# 三、TraceView的使用（DDMS）
 >主要分析traces.txt文件的，可惜Android Studio3.0编辑页面不显示该文件了。但DDMS还可以用.不但可以分析ANR，也可以分享卡顿问题。
 
 生成traces.txt有两种方式：
@@ -21,3 +21,86 @@ DDMS的作用它提供截屏，查看线程和堆的信息，logcat，进程，�
 
 ![image](http://note.youdao.com/yws/public/resource/9cd56f6819876ec80563ab61665a91d7/xmlnote/C2E19CA55CB14AEE8F72FCC92CD021EC/8425)
 首先解除这些意思：[link](http://blog.jobbole.com/78995/)
+# 四、内存泄露工具：LeakCannary
+JAVA是垃圾回收语言的一种，开发者无需特意管理内存分配。但是JAVA中还是存在着许多内存泄露的可能性，如果不好好处理内存泄露，会导致APP内存单元无法释放被浪费掉，最终导致内存全部占据堆栈(heap)挤爆进而程序崩溃  
+[官网:LeakCanary 中文使用说明](https://www.liaohuqiu.net/cn/posts/leak-canary-read-me/)  
+使用步骤：  
+### 1、在 build.gradle 中加入引用，不同的编译使用不同的引用：
+```
+ dependencies {
+   debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3'
+   releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3'
+ }
+ ```
+在 Application 中：
+```
+public class ExampleApplication extends Application {
+
+  @Override public void onCreate() {
+    super.onCreate();
+    LeakCanary.install(this);
+  }
+}
+```
+这样，就万事俱备了！ 在 debug build 中，如果检测到某个 activity 有内存泄露，LeakCanary 就是自动地显示一个通知。
+
+### 2、监控Activity
+```
+public class ExampleApplication extends Application {
+
+  public static RefWatcher getRefWatcher(Context context) {
+    ExampleApplication application = (ExampleApplication) context.getApplicationContext();
+    return application.refWatcher;
+  }
+
+  private RefWatcher refWatcher;
+
+  @Override public void onCreate() {
+    super.onCreate();
+    refWatcher = LeakCanary.install(this);
+  }
+}
+```
+### 3、监控Fragment
+```
+public abstract class BaseFragment extends Fragment {
+
+  @Override public void onDestroy() {
+    super.onDestroy();
+    RefWatcher refWatcher = ExampleApplication.getRefWatcher(getActivity());
+    refWatcher.watch(this);
+  }
+}
+```
+
+### 4、最新版本
+在6.0以上的版本中会弹出异常，log里也会打印出空指针。
+在最新版本已经修复了这个问题。
+```
+java.lang.NullPointerException: Attempt to invoke virtual method 'boolean java.lang.String.equals(java.lang.Object)' on a null object reference at com.squareup.leakcanary.HeapAnalyzer.findLeakingReference(HeapAnalyzer.java:160)
+```
+新更新的SDK 1.5版本，已经完美解决、android6.0以上运行时权限，Notification无法弹出的问题，需要重新配置   
+build.gradle:
+```
+dependencies {
+   debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+   releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+   testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+ }
+```
+application:
+```
+public class ExampleApplication extends Application {
+
+  @Override public void onCreate() {
+    super.onCreate();
+    if (LeakCanary.isInAnalyzerProcess(this)) {
+      // This process is dedicated to LeakCanary for heap analysis.
+      // You should not init your app in this process.
+      return;
+    }
+    LeakCanary.install(this);
+    // Normal app init code...
+  }
+}
+```
