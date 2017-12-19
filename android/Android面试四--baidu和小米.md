@@ -43,7 +43,10 @@ HTTPS解决的是信息传输中数据被篡改、窃取。HTTPS通过对称和�
 # 桌面icon启动过程
 # Activity的启动栈，怎么固定到一个栈（Manifest的属性）
 # 软引用、弱引用，到底回收吗，如果还持有应用呢，就不回收了吗，岂不是和强引用一样了
-# 事件分发机制
+# 事件分发机制（必问问题）
+  郭神有个事件分发机制图可以帮助记忆
+ [ Android事件分发机制完全解析，带你从源码的角度彻底理解(上)](http://blog.csdn.net/guolin_blog/article/details/9097463/),当然还有下。  
+  [Android ViewGroup事件分发机制](http://blog.csdn.net/lmj623565791/article/details/39102591)
 # Dragger2为什么不影响性能？变成了二进制？google后台服务器也实现了，怎么实现的注入
 # broadcasts的源码，进程间通信，四大组件也是进程间通信吗
 # 基本算法都会写
