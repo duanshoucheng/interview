@@ -32,7 +32,7 @@ HTTPS解决的是信息传输中数据被篡改、窃取。HTTPS通过对称和�
 # animotor,animotion
 # ReactNative，有什么优势，为什么用这个
 # NodeJS 
-# 进程间 通信
+# 进程间通信
 # 进程锁有哪些？只知道有个文件锁
 # handler源码，loop没数据的时候不阻塞吗，Handler的原理，线程Apost一个任务到线程B
 # 桌面icon启动过程
@@ -49,7 +49,12 @@ HTTPS解决的是信息传输中数据被篡改、窃取。HTTPS通过对称和�
 # 对称加密和非对称加密，（so文件破解的问题，很容易）
 # reyclerview是怎么实现缓存的，多布局的呢
 # 了解运营的数据
-# 怎么自己实现hashmap，ArrayList
+# 怎么自己实现hashmap和ArrayList,hashTable是怎样实现线程安全的。（比较少见）
+ [java——HashMap的实现原理，自己实现简单的HashMap](https://www.cnblogs.com/xcr1234/p/6187663.html)
+ [HashMap的容量与扩容](http://blog.csdn.net/gaopu12345/article/details/50831631);  
+ [调试JDK源码-一步一步看HashMap怎么Hash和扩容](http://blog.csdn.net/unix21/article/details/50911387)  
+ [调试JDK源码-Hashtable实现原理以及线程安全的原因](http://blog.csdn.net/unix21/article/details/50920708)  
+ hashTable其实就是因为这个put方法是synchronized的所以可以保证其线程安全。
 # 二叉树的问题看面试官，有的面试官很鄙视这样的问题，有的面试官会觉得很有面
 # 内存泄露有哪些
 # AAR怎么实现自己混淆，而不用用户自己再做keep等相关的问题
