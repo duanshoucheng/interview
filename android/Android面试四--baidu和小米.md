@@ -17,7 +17,6 @@ HTTPS解决的是信息传输中数据被篡改、窃取。HTTPS通过对称和�
  - 静态类默认继承自System.Object根类，不能显式指定任何其他基类。
  - 静态类不能指定任何接口实现。
  - 静态类的成员不能有protected或protected internal访问保护修饰符。
-# hashtable的源码，是怎样实现线程安全的
 # Lambda有什么优点
 - 费神去命名一个函数
 - 享受了一些函数式编程的优势
@@ -34,6 +33,9 @@ HTTPS解决的是信息传输中数据被篡改、窃取。HTTPS通过对称和�
 # NodeJS 
 # 进程间通信
 # 进程锁有哪些？只知道有个文件锁
+  入门参考：[Java线程(一)：线程安全与不安全](http://blog.csdn.net/ghsau/article/details/7421217)  
+  [Java对象锁和类锁全面解析（多线程synchronized关键字](ttp://www.importnew.com/20444.html)  
+  需要特别说明：对于同一个类A，线程1争夺A对象实例的对象锁，线程2争夺类A的类锁，这两者不存在竞争关系。也就说对象锁和类锁互补干预内政
 # handler源码，loop没数据的时候不阻塞吗，Handler的原理，线程Apost一个任务到线程B
 # 桌面icon启动过程
 # Activity的启动栈，怎么固定到一个栈（Manifest的属性）
