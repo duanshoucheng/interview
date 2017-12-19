@@ -37,6 +37,8 @@ HTTPS解决的是信息传输中数据被篡改、窃取。HTTPS通过对称和�
   入门参考：[Java线程(一)：线程安全与不安全](http://blog.csdn.net/ghsau/article/details/7421217)    
   [Java对象锁和类锁全面解析（多线程synchronized关键字](http://www.importnew.com/20444.html)  
   需要特别说明：对于同一个类A，线程1争夺A对象实例的对象锁，线程2争夺类A的类锁，这两者不存在竞争关系。也就说对象锁和类锁互补干预内政
+  [Java并发编程：Lock](https://www.cnblogs.com/dolphin0520/p/3923167.html)  
+  文件锁是进程锁
 # handler源码，loop没数据的时候不阻塞吗，Handler的原理，线程Apost一个任务到线程B
 # 桌面icon启动过程
 # Activity的启动栈，怎么固定到一个栈（Manifest的属性）
@@ -52,11 +54,19 @@ HTTPS解决的是信息传输中数据被篡改、窃取。HTTPS通过对称和�
 # 对称加密和非对称加密，（so文件破解的问题，很容易）
 # reyclerview是怎么实现缓存的，多布局的呢
 # 了解运营的数据
+DAU (Daily Active User) 即日活跃用户数量，统计的是一日之内，登录或使用过某个应用的用户数（去除重复登录的用户 ）。
+WAU (Weekly Active User) 即周活跃用户数量，是指在一周之内登录或使用该应用的用户数量。
+MAU（Monthly Active Users）即月活跃用户数，指的是在一个月中至少使用过一次该应用的独立用户数量。
+UV（Unique Vister）独立访客。
+UED：用户体验设计，比较装逼的岗位
+PV（page view）页面浏览的总次数。
+首发：分为独家首发和联合首发，独家首发是指App新版本第一个选择的分发渠道，期间只在指定的市场进行新版本发布，其 他渠道的发布时间至少须晚于首发市场24小时。联合首发是指在多个应用市场同步进行新版本发布。
 # 怎么自己实现hashmap和ArrayList,hashTable是怎样实现线程安全的。（比较少见）
  [java——HashMap的实现原理，自己实现简单的HashMap](https://www.cnblogs.com/xcr1234/p/6187663.html)
  [HashMap的容量与扩容](http://blog.csdn.net/gaopu12345/article/details/50831631);  
  [调试JDK源码-一步一步看HashMap怎么Hash和扩容](http://blog.csdn.net/unix21/article/details/50911387)  
  [调试JDK源码-Hashtable实现原理以及线程安全的原因](http://blog.csdn.net/unix21/article/details/50920708)  
+ [Java线程(八)：锁对象Lock-同步问题更完美的处理方式](http://blog.csdn.net/ghsau/article/details/7461369/)
  hashTable其实就是因为这个put方法是synchronized的所以可以保证其线程安全。
 # 二叉树的问题看面试官，有的面试官很鄙视这样的问题，有的面试官会觉得很有面
 # 内存泄露有哪些
