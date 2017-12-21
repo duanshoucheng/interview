@@ -8,7 +8,7 @@ public，protect，private，默认。这四种的区别
 ButterKnife注解是在编译阶段生成类，在build/generated/source/apt目录之下可以看到自己的包名，在包下可以看到使用ButterKnife的类名_ViewBinding.java，该类继承Unbinder，
 在构造函数中可以看到熟悉的findViewById等代码。  
 Retrofit使用的动态代理的方式实现的
-### 4、Retrofit的流程是怎样的，说说源码
+### 4、Retrofit的流程是怎样的，说说源码，优势在哪里，有没有二次封装
 建议okhttp、glide、Retrofit等等源码都看一遍，这些被问到的可能非常大。
 ```
 Retrofit restAdapter = new Retrofit.Builder()
@@ -65,8 +65,10 @@ Service的两种启动方式比较简单，还有多次startService()会怎样�
 ### 7、网络优化
 ### 8、性能优化
 ### 9、打包问题，如何多渠道打包，还有gradle其他的一些问题。
-### 10、手写一个单例，懒汉式、饿汉式、线程安全
+### 10、手写一个单例，注意懒汉式、饿汉式、线程安全
 ### 11、手写一个线程池，Synchronize和volatile的区别
 ### 12、其他问题，比如为什么跳槽，自己职业规划。
+### 13、Fragment和Activity的通信
+这个可以互相调用，但是Fragment和Fragment之间通信需要通过Activity，但是不建议这样，可以使用EventBus。  
 
-一面二面用了两个小时，还有一些问题记不住了，网络优化和性能优化探讨的比较多
+问题没有排名，记多少写多少。一面二面用了两个小时，还有一些问题记不住了，网络优化和性能优化探讨的比较多，开源框架还有RxJava，设计模式MVC和MVP的区别
