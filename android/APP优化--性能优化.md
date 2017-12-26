@@ -270,7 +270,8 @@ public class MyApplication extends Application {
 ```
 # 19 尽量为所有分辨率创建资源
 [减少不必要的硬件缩放，这会降低UI的绘制速度，可借助Android asset studio]( http://android-ui-utils.googlecode.com/hg/asset-studio/dist/index.html/)
-
+# 20 SurfaceView
+可以在主线程之外的线程中向屏幕绘图上。这样可以避免画图任务繁重的时候造成主线程阻塞，从而提高了程序的反应速度。在游戏开发中多用到SurfaceView，游戏中的背景、人物、动画等等尽量在画布canvas中画出。  
 # 总结
 1. 关于性能优化方面知识，官方也出过视频A[ndroid Performance Patterns](https://www.youtube.com/playlist?list=PLWz5rJ2EKKc9CBxr3BVjPTPoDPLdPIFCE)
 2. [java/android 设计模式学习笔记（5）---对象池模式](http://blog.csdn.net/self_study/article/details/51477002)
