@@ -276,6 +276,8 @@ public class MyApplication extends Application {
 数组使用一般for效率高，链表使用foreach效率高。
 # 22 tyr的优化
 有些地方空指针添加一个判空就好了，没必要抛出一个空指针异常。try里面的代码块能少则少。
+# 23 使用实类比接口好
+HashMap mMap = new HashMap();比Map mMap = new HashMap()好，嵌入式系统调用一个接口的引用会比调用实体类的引用多花费一倍的时间。
 # 总结
 1. 关于性能优化方面知识，官方也出过视频A[ndroid Performance Patterns](https://www.youtube.com/playlist?list=PLWz5rJ2EKKc9CBxr3BVjPTPoDPLdPIFCE)
 2. [java/android 设计模式学习笔记（5）---对象池模式](http://blog.csdn.net/self_study/article/details/51477002)
