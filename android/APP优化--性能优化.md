@@ -273,11 +273,29 @@ public class MyApplication extends Application {
 # 20 SurfaceView
 可以在主线程之外的线程中向屏幕绘图上。这样可以避免画图任务繁重的时候造成主线程阻塞，从而提高了程序的反应速度。在游戏开发中多用到SurfaceView，游戏中的背景、人物、动画等等尽量在画布canvas中画出。  
 # 21 foreach和一般for的使用
-数组使用一般for效率高，链表使用foreach效率高。
+数组使用一般for效率高，链表使用foreach效率高。foreach相当于实现了iterator.
 # 22 tyr的优化
 有些地方空指针添加一个判空就好了，没必要抛出一个空指针异常。try里面的代码块能少则少。
 # 23 使用实类比接口好
 HashMap mMap = new HashMap();比Map mMap = new HashMap()好，嵌入式系统调用一个接口的引用会比调用实体类的引用多花费一倍的时间。
+# 24 将成员变量缓存到本地
+访问成员变量比访问本地变量慢的多，比如：
+```
+for (int i = 0; i < this.mCount; i++){
+    dumpItem(this.mItems[i]);
+}
+```
+最好修改如下：
+```
+int count = this.mCount;
+Item[] items = this.mItems;
+for (int i = 0; i<count;i++){
+    dumpItem(items[i]);
+}
+```
+另一个相似的原则：永远不要在for的第二个条件调用任何方法。
+# 25 避免使用枚举
+会牺牲执行的速度和并大幅度增加文件体积
 # 总结
 1. 关于性能优化方面知识，官方也出过视频A[ndroid Performance Patterns](https://www.youtube.com/playlist?list=PLWz5rJ2EKKc9CBxr3BVjPTPoDPLdPIFCE)
 2. [java/android 设计模式学习笔记（5）---对象池模式](http://blog.csdn.net/self_study/article/details/51477002)
