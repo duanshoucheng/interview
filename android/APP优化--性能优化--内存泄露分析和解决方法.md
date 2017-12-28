@@ -135,7 +135,7 @@ public class MainActivity extends Activity {
 }
 ```
 第三种 改进方法：在onDestory()方法内实现引用置空:
-mHandler = null;
+mHandler = null;或者mHandler.removeCallbacksAndMessages();
 # Thread 内存泄露
 线程也是造成内存泄露的一个重要的源头。线程产生内存泄露的主要原因在于线程生命周期的不可控。
 
