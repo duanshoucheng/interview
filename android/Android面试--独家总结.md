@@ -9,7 +9,7 @@
 7、内存泄露有哪些，如何解决
 ## 常问环节（没事儿常刷LeetCode）：
 1、一般算法：主要是几种基本排序；
-2、二叉树，比如如何横向遍历等；
+2、二叉树，比如如何横向遍历等，view和GroupView组成的就是二叉树；
 3、HashMap的原理，如何实现线程安全；
 4、开源框架的源码解释，比如：ButterKnife，Glide，Okhttp，Retrofit2，Volley，dagger2，RxJava/RxAndroid、greenDAO、EventBus等等
 5、链表：如何判断是否是环形链表，环形链表如何确定环的位置（比如b型的链表）。
